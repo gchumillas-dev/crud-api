@@ -53,8 +53,6 @@ func main() {
 
 	// private routes
 	private := r.PathPrefix(prefix).Subrouter()
-	private.HandleFunc("/sections", env.Sections).Methods("GET")
-	private.HandleFunc("/sections/{ID}/notes", env.SectionNotes).Methods("GET")
 	private.Use(env.AuthMiddleware)
 
 	// CORS support
