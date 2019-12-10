@@ -2,11 +2,9 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"app/manager"
-	"app/str"
 )
 
 // Login handler.
@@ -24,20 +22,6 @@ func (env *Env) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(u.NewToken(env.PrivateKey, env.Expiration))
-}
-
-// Home handler.
-func (env *Env) Home(w http.ResponseWriter, r *http.Request) {
-	u := getUser(r)
-	username := str.Ucfirst(u.Username)
-
-	msg := fmt.Sprintf(
-		"Hi %s, welcome to CMSystem. Select a section from the main menu to start editing.",
-		username)
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"title":   "Welcome to CMSystem",
-		"message": msg,
-	})
 }
 
 // SectionNotes handler.
