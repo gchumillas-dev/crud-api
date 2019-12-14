@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"app/manager"
+	"github.com/gchumillas/crud-api/db/manager"
 )
 
 // Login handler.

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"app/manager"
+	"github.com/gchumillas/crud-api/db/manager"
 )
 
 // AuthMiddleware verifies that the user was successful authorized.

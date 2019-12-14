@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"app/token"
+	"github.com/gchumillas/crud-api/token"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"

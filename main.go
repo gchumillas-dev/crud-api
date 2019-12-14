@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gchumillas/anis-api/handler"
+	"github.com/gchumillas/crud-api/http/handler"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 

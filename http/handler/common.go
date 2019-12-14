@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"app/manager"
+	"github.com/gchumillas/crud-api/db/manager"
 )
 
 // Env contains common variables, such as the database access, etc.
