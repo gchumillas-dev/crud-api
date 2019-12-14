@@ -4,9 +4,8 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/gchumillas/crud-api/auth/token"
-
 	jwt "github.com/dgrijalva/jwt-go"
+	auth "github.com/gchumillas/crud-api/auth"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -36,7 +35,7 @@ func (user *User) NewToken(privateKey string, expiration time.Duration) string {
 	claims := userClaims{UserID: user.ID}
 	claims.ExpiresAt = time.Now().Add(expiration).Unix()
 
-	return token.New(privateKey, claims)
+	return auth.NewToken(privateKey, claims)
 }
 
 // ReadUser reads a user.
@@ -87,7 +86,7 @@ func (user *User) ReadUserByCredentials(db *sql.DB, uname string, upass string) 
 // ReadUserByToken reads a user by token.
 func (user *User) ReadUserByToken(db *sql.DB, privateKey, signedToken string) (found bool) {
 	claims := &userClaims{UserID: user.ID}
-	if _, err := token.Parse(privateKey, signedToken, claims); err != nil {
+	if _, err := auth.ParseToken(privateKey, signedToken, claims); err != nil {
 		return false
 	}
 
