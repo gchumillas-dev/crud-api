@@ -9,10 +9,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gchumillas/anis-api/handler"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-
-	"app/handler"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/joho/godotenv/autoload"
