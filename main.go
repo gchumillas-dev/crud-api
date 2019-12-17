@@ -52,6 +52,7 @@ func main() {
 
 	// private routes
 	private := r.PathPrefix(prefix).Subrouter()
+	private.HandleFunc("/items", env.CreateItem).Methods("POST")
 	private.HandleFunc("/items", env.GetItems).Methods("GET")
 	private.Use(env.AuthMiddleware)
 

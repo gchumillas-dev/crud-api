@@ -9,11 +9,6 @@ type Item struct {
 	Description string
 }
 
-// NewItem creates a item.
-func NewItem(title string, description string) *Item {
-	return &Item{Title: title, Description: description}
-}
-
 // CreateItem creates a new item.
 func (item *Item) CreateItem(db *sql.DB) {
 	res, err := db.Exec(`insert into item values(title, description)`, item.Title, item.Description)
