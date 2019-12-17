@@ -65,3 +65,28 @@ func (item *Item) DeleteItem(db *sql.DB) {
 		panic(err)
 	}
 }
+
+// GetItems gets all items.
+func GetItems(db *sql.DB) []Item {
+	items := []Item{}
+
+	sql := `
+	select id, title, description
+	from item
+	order by id desc`
+	rows, err := db.Query(sql)
+	if err != nil {
+		panic(err)
+	}
+
+	for rows.Next() {
+		item := Item{}
+		if err := rows.Scan(&item.ID, &item.Title, &item.Description); err != nil {
+			panic(err)
+		}
+
+		items = append(items, item)
+	}
+
+	return items
+}
