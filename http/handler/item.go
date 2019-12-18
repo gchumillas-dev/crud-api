@@ -65,6 +65,18 @@ func (env *Env) UpdateItem(w http.ResponseWriter, r *http.Request) {
 	item.UpdateItem(env.DB)
 }
 
+// DeleteItem handler.
+func (env *Env) DeleteItem(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	itemID, err := strconv.ParseInt(params["itemID"], 10, 32)
+	if err != nil {
+		panic(err)
+	}
+
+	item := manager.NewItem(itemID)
+	item.DeleteItem(env.DB)
+}
+
 // GetItems handler.
 func (env *Env) GetItems(w http.ResponseWriter, r *http.Request) {
 	items := manager.GetItems(env.DB)

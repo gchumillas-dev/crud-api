@@ -55,6 +55,7 @@ func main() {
 	private.HandleFunc("/items", env.CreateItem).Methods("POST")
 	private.HandleFunc("/items/{itemID}", env.ReadItem).Methods("GET")
 	private.HandleFunc("/items/{itemID}", env.UpdateItem).Methods("PUT", "PATCH")
+	private.HandleFunc("/items/{itemID}", env.DeleteItem).Methods("DELETE")
 	private.HandleFunc("/items", env.GetItems).Methods("GET")
 	private.Use(env.AuthMiddleware)
 
