@@ -59,7 +59,7 @@ func (item *Item) ReadItem(db *sql.DB) (found bool) {
 func (item *Item) UpdateItem(db *sql.DB) {
 	_, err := db.Exec(`
 	update item set title = ?, description = ?
-	where id = ?`, item.Title, item.Description)
+	where id = ?`, item.Title, item.Description, item.ID)
 	if err != nil {
 		panic(err)
 	}
