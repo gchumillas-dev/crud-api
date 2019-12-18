@@ -11,7 +11,7 @@ type Item struct {
 
 // CreateItem creates a new item.
 func (item *Item) CreateItem(db *sql.DB) {
-	res, err := db.Exec(`insert into item values(title, description)`, item.Title, item.Description)
+	res, err := db.Exec(`insert into item(title, description) values(?, ?)`, item.Title, item.Description)
 	if err != nil {
 		panic(err)
 	}
