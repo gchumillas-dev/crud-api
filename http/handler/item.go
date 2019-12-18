@@ -3,8 +3,10 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/gchumillas/crud-api/db/manager"
+	"github.com/gorilla/mux"
 )
 
 // CreateItem handler.
@@ -24,6 +26,20 @@ func (env *Env) CreateItem(w http.ResponseWriter, r *http.Request) {
 	item.CreateItem(env.DB)
 
 	json.NewEncoder(w).Encode(map[string]interface{}{"id": item.ID})
+}
+
+// ReadItem handler.
+func (env *Env) ReadItem(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	itemID, err := strconv.ParseInt(params["itemID"], 10, 32)
+	if err != nil {
+		panic(err)
+	}
+
+	item := manager.NewItem(itemID)
+	item.ReadItem(env.DB)
+
+	json.NewEncoder(w).Encode(item)
 }
 
 // GetItems handler.

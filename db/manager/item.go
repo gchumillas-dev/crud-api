@@ -9,6 +9,16 @@ type Item struct {
 	Description string
 }
 
+// NewItem returns a new item.
+func NewItem(ID ...int64) *Item {
+	var id int64
+	if len(ID) > 0 {
+		id = ID[0]
+	}
+
+	return &Item{ID: id}
+}
+
 // CreateItem creates a new item.
 func (item *Item) CreateItem(db *sql.DB) {
 	res, err := db.Exec(`
@@ -26,7 +36,7 @@ func (item *Item) CreateItem(db *sql.DB) {
 }
 
 // ReadItem reads an item.
-func (item *Item) ReadItem(db *sql.DB, ID string) (found bool) {
+func (item *Item) ReadItem(db *sql.DB) (found bool) {
 	stmt, err := db.Prepare(`
 	select id, title, description
 	from item where id = ?`)
@@ -35,7 +45,7 @@ func (item *Item) ReadItem(db *sql.DB, ID string) (found bool) {
 	}
 	defer stmt.Close()
 
-	switch err := stmt.QueryRow(ID).Scan(&item.ID, &item.Title, &item.Description); {
+	switch err := stmt.QueryRow(item.ID).Scan(&item.ID, &item.Title, &item.Description); {
 	case err == sql.ErrNoRows:
 		return false
 	case err != nil:
