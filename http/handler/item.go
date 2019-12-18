@@ -23,7 +23,9 @@ func (env *Env) CreateItem(w http.ResponseWriter, r *http.Request) {
 	item := manager.Item{}
 	item.Title = payload.Title
 	item.Description = payload.Description
-	item.CreateItem(env.DB)
+	if err := item.CreateItem(env.DB); err != nil {
+		panic(err)
+	}
 
 	json.NewEncoder(w).Encode(map[string]interface{}{"id": item.ID})
 }
@@ -37,7 +39,10 @@ func (env *Env) ReadItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	item := manager.NewItem(itemID)
-	item.ReadItem(env.DB)
+	if err := item.ReadItem(env.DB); err != nil {
+		httpError(w, docNotFoundError)
+		return
+	}
 
 	json.NewEncoder(w).Encode(item)
 }
@@ -62,7 +67,9 @@ func (env *Env) UpdateItem(w http.ResponseWriter, r *http.Request) {
 	item := manager.NewItem(itemID)
 	item.Title = payload.Title
 	item.Description = payload.Description
-	item.UpdateItem(env.DB)
+	if err := item.UpdateItem(env.DB); err != nil {
+		panic(err)
+	}
 }
 
 // DeleteItem handler.
@@ -74,12 +81,17 @@ func (env *Env) DeleteItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	item := manager.NewItem(itemID)
-	item.DeleteItem(env.DB)
+	if err := item.DeleteItem(env.DB); err != nil {
+		panic(err)
+	}
 }
 
 // GetItems handler.
 func (env *Env) GetItems(w http.ResponseWriter, r *http.Request) {
-	items := manager.GetItems(env.DB)
+	items, err := manager.GetItems(env.DB)
+	if err != nil {
+		panic(err)
+	}
 
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"items": items,
