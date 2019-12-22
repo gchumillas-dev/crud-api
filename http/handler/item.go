@@ -11,18 +11,12 @@ import (
 
 // CreateItem handler.
 func (env *Env) CreateItem(w http.ResponseWriter, r *http.Request) {
-	var payload struct {
-		Title       string
-		Description string
-	}
-	dec := json.NewDecoder(r.Body)
-	if err := dec.Decode(&payload); err != nil {
-		panic(err)
-	}
+	var body struct { Title string; Description string }
+	parseBody(w, r, body)
 
 	item := manager.Item{}
-	item.Title = payload.Title
-	item.Description = payload.Description
+	item.Title = body.Title
+	item.Description = body.Description
 	if err := item.CreateItem(env.DB); err != nil {
 		panic(err)
 	}
@@ -55,18 +49,12 @@ func (env *Env) UpdateItem(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	var payload struct {
-		Title       string
-		Description string
-	}
-	dec := json.NewDecoder(r.Body)
-	if err := dec.Decode(&payload); err != nil {
-		panic(err)
-	}
+	var body struct { Title string; Description string }
+	parseBody(w, r, body)
 
 	item := manager.NewItem(itemID)
-	item.Title = payload.Title
-	item.Description = payload.Description
+	item.Title = body.Title
+	item.Description = body.Description
 	if err := item.UpdateItem(env.DB); err != nil {
 		panic(err)
 	}
