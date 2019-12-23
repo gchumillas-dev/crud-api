@@ -11,8 +11,11 @@ import (
 
 // CreateItem handler.
 func (env *Env) CreateItem(w http.ResponseWriter, r *http.Request) {
-	var body struct { Title string; Description string }
-	parseBody(w, r, body)
+	var body struct {
+		Title       string
+		Description string
+	}
+	parseBody(w, r, &body)
 
 	item := manager.Item{}
 	item.Title = body.Title
@@ -46,11 +49,16 @@ func (env *Env) UpdateItem(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	itemID, err := strconv.ParseInt(params["itemID"], 10, 32)
 	if err != nil {
+
 		panic(err)
+
 	}
 
-	var body struct { Title string; Description string }
-	parseBody(w, r, body)
+	var body struct {
+		Title       string
+		Description string
+	}
+	parseBody(w, r, &body)
 
 	item := manager.NewItem(itemID)
 	item.Title = body.Title
