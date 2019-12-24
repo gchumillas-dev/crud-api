@@ -15,12 +15,13 @@ func (env *Env) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	parseBody(w, r, &body)
 
-	// TODO: increase expiration time
 	u := manager.NewUser()
 	if !u.ReadUserByCredentials(env.DB, body.Username, body.Password) {
 		httpError(w, forbiddenError)
 		return
 	}
 
-	json.NewEncoder(w).Encode(u.NewToken(env.PrivateKey, env.Expiration))
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"token": u.NewToken(env.PrivateKey, env.Expiration),
+	})
 }
