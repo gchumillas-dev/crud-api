@@ -41,7 +41,10 @@ func (env *Env) ReadItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(item)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"title": item.Title,
+		"description": item.Description,
+	})
 }
 
 // UpdateItem handler.
