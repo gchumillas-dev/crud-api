@@ -3,6 +3,8 @@ package handler
 import (
 	"net/http"
 	"strings"
+
+	"github.com/gchumillas/crud-api/db/manager"
 )
 
 // AuthMiddleware verifies that the user was successful authorized.
@@ -15,6 +17,12 @@ func (env *Env) AuthMiddleware(next http.Handler) http.Handler {
 		}
 
 		if len(token) == 0 {
+			httpError(w, unauthorizedError)
+			return
+		}
+
+		u := manager.NewUser()
+		if !u.ReadUserByToken(env.DB, env.PrivateKey, token) {
 			httpError(w, unauthorizedError)
 			return
 		}
