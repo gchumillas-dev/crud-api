@@ -17,6 +17,11 @@ func (env *Env) CreateItem(w http.ResponseWriter, r *http.Request) {
 	}
 	parseBody(w, r, &body)
 
+	if len(body.Title) == 0 {
+		httpError(w, badRequestError)
+		return
+	}
+
 	item := manager.Item{}
 	item.Title = body.Title
 	item.Description = body.Description
@@ -42,7 +47,7 @@ func (env *Env) ReadItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"title": item.Title,
+		"title":       item.Title,
 		"description": item.Description,
 	})
 }

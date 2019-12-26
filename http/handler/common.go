@@ -22,6 +22,7 @@ type httpStatus struct {
 }
 
 var (
+	badRequestError   = httpStatus{400, "Bad request"}
 	docNotFoundError  = httpStatus{404, "Document not found"}
 	unauthorizedError = httpStatus{401, "Not authorized"}
 	forbiddenError    = httpStatus{403, "Forbidden"}
