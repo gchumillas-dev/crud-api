@@ -57,9 +57,7 @@ func (env *Env) UpdateItem(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	itemID, err := strconv.ParseInt(params["itemID"], 10, 32)
 	if err != nil {
-
 		panic(err)
-
 	}
 
 	var body struct {
@@ -67,6 +65,11 @@ func (env *Env) UpdateItem(w http.ResponseWriter, r *http.Request) {
 		Description string
 	}
 	parseBody(w, r, &body)
+
+	if len(body.Title) == 0 {
+		httpError(w, badRequestError)
+		return
+	}
 
 	item := manager.NewItem(itemID)
 	item.Title = body.Title
