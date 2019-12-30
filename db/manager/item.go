@@ -4,7 +4,7 @@ import "database/sql"
 
 // Item manages items.
 type Item struct {
-	ID          int64      `json:"id"`
+	ID          int64             `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 }
@@ -101,4 +101,17 @@ func GetItems(db *sql.DB, offset int, count int) ([]Item, error) {
 	}
 
 	return items, nil
+}
+
+// GetNumItems returns the number of items.
+func GetNumItems(db *sql.DB) (int, error) {
+	query := "select count(*) from item"
+	row := db.QueryRow(query)
+
+	var count int
+	if err := row.Scan(&count); err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }

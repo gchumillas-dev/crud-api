@@ -107,7 +107,19 @@ func (env *Env) GetItems(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
+	numItems, err := manager.GetNumItems(env.DB)
+	if err != nil {
+		panic(err)
+	}
+
+	pages := numItems / env.RowsPerPage
+	remainder := numItems % env.RowsPerPage
+	if remainder > 0 {
+		pages++
+	}
+
 	json.NewEncoder(w).Encode(map[string]interface{}{
+		"pages": pages,
 		"items": items,
 	})
 }
