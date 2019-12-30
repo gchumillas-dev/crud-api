@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -25,6 +26,10 @@ func main() {
 	dbName := os.Getenv("dbName")
 	dbUser := os.Getenv("dbUser")
 	dbPass := os.Getenv("dbPass")
+	rowsPerPage, err := strconv.Atoi(os.Getenv("rowsPerPage"))
+	if err != nil {
+		panic(err)
+	}
 
 	dsName := fmt.Sprintf("%s:%s@/%s", dbUser, dbPass, dbName)
 	db, err := sql.Open("mysql", dsName)
@@ -41,7 +46,9 @@ func main() {
 	env := &handler.Env{
 		DB:         db,
 		PrivateKey: privateKey,
-		Expiration: expiration}
+		Expiration: expiration,
+		RowsPerPage: rowsPerPage,
+	}
 	prefix := fmt.Sprintf("/%s", strings.TrimLeft(apiVersion, "/"))
 	r := mux.NewRouter()
 	r.Use(env.JSONMiddleware)

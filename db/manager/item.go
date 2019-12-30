@@ -4,7 +4,7 @@ import "database/sql"
 
 // Item manages items.
 type Item struct {
-	ID          int64 `json:"id"`
+	ID          int64      `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 }
@@ -78,14 +78,15 @@ func (item *Item) DeleteItem(db *sql.DB) error {
 }
 
 // GetItems gets all items.
-func GetItems(db *sql.DB) ([]Item, error) {
+func GetItems(db *sql.DB, offset int, count int) ([]Item, error) {
 	items := []Item{}
 
 	query := `
 	select id, title, description
 	from item
-	order by id desc`
-	rows, err := db.Query(query)
+	order by id desc
+	limit ?, ?`
+	rows, err := db.Query(query, offset, count)
 	if err != nil {
 		return nil, err
 	}

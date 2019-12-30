@@ -95,7 +95,14 @@ func (env *Env) DeleteItem(w http.ResponseWriter, r *http.Request) {
 
 // GetItems handler.
 func (env *Env) GetItems(w http.ResponseWriter, r *http.Request) {
-	items, err := manager.GetItems(env.DB)
+	page, err := strconv.Atoi(getParam(r, "page", "0"))
+	if err != nil || page < 0 {
+		httpError(w, badRequestError)
+		return
+	}
+
+	offset := page * env.RowsPerPage
+	items, err := manager.GetItems(env.DB, offset, env.RowsPerPage)
 	if err != nil {
 		panic(err)
 	}

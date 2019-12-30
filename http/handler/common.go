@@ -13,6 +13,7 @@ type Env struct {
 	DB         *sql.DB
 	PrivateKey string
 	Expiration time.Duration
+	RowsPerPage int
 }
 
 // Common HTTP status errors.
@@ -39,4 +40,13 @@ func parseBody(w http.ResponseWriter, r *http.Request, body interface{}) {
 	if err := dec.Decode(body); err != nil {
 		panic(err)
 	}
+}
+
+func getParam(r *http.Request, key, def string) (param string) {
+	if param = r.FormValue(key); len(param) == 0 {
+		param = def
+	}
+
+	return
+
 }
