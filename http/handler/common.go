@@ -10,9 +10,9 @@ import (
 
 // Env contains common variables, such as the database access, etc.
 type Env struct {
-	DB         *sql.DB
-	PrivateKey string
-	Expiration time.Duration
+	DB          *sql.DB
+	PrivateKey  string
+	Expiration  time.Duration
 	RowsPerPage int
 }
 
@@ -49,4 +49,15 @@ func getParam(r *http.Request, key, def string) (param string) {
 
 	return
 
+}
+
+
+func inArray(item string, items []string) bool {
+	for index := range items {
+		if items[index] == item {
+			return true
+		}
+	}
+
+	return false
 }

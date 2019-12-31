@@ -101,8 +101,15 @@ func (env *Env) GetItems(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	sortCol := getParam(r, "sort", "-id")
+	allowedSortCols := []string{"-id", "title", "-title"}
+	if !inArray(sortCol, allowedSortCols) {
+		httpError(w, badRequestError)
+		return
+	}
+
 	offset := page * env.RowsPerPage
-	items, err := manager.GetItems(env.DB, offset, env.RowsPerPage)
+	items, err := manager.GetItems(env.DB, sortCol, offset, env.RowsPerPage)
 	if err != nil {
 		panic(err)
 	}
@@ -114,7 +121,7 @@ func (env *Env) GetItems(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"rowsPerPage": env.RowsPerPage,
-		"numRows": numRows,
-		"items": items,
+		"numRows":     numRows,
+		"items":       items,
 	})
 }
