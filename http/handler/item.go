@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gchumillas/crud-api/db/manager"
+	"github.com/gchumillas/crud-api/utils"
 	"github.com/gorilla/mux"
 )
 
@@ -101,15 +103,11 @@ func (env *Env) GetItems(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sortCol := getParam(r, "sort", "-id")
-	allowedSortCols := []string{"-id", "title", "-title"}
-	if !inArray(sortCol, allowedSortCols) {
-		httpError(w, badRequestError)
-		return
-	}
+	var sortCol, sortDir string
+	utils.Unpack(strings.Split(getParam(r, "sort", "id,desc"), ","), &sortCol, &sortDir)
 
 	offset := page * env.RowsPerPage
-	items, err := manager.GetItems(env.DB, sortCol, offset, env.RowsPerPage)
+	items, err := manager.GetItems(env.DB, offset, env.RowsPerPage, sortCol, sortDir)
 	if err != nil {
 		panic(err)
 	}
@@ -120,8 +118,10 @@ func (env *Env) GetItems(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"rowsPerPage": env.RowsPerPage,
-		"numRows":     numRows,
-		"items":       items,
+		"sortColumn":    sortCol,
+		"sortDirection": sortDir,
+		"rowsPerPage":   env.RowsPerPage,
+		"numRows":       numRows,
+		"items":         items,
 	})
 }

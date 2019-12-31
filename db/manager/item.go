@@ -2,8 +2,10 @@ package manager
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
-	"strings"
+
+	utils "github.com/gchumillas/crud-api/utils"
 )
 
 // Item manages items.
@@ -82,21 +84,20 @@ func (item *Item) DeleteItem(db *sql.DB) error {
 }
 
 // GetItems gets all items.
-func GetItems(db *sql.DB, sortCol string, offset int, count int) ([]Item, error) {
+func GetItems(db *sql.DB, offset int, count int, sortCol string, sortDir string) ([]Item, error) {
 	items := []Item{}
 
-	col := sortCol
-	ord := ""
-	if pos := strings.IndexRune(sortCol, '-'); pos == 0 {
-		col = sortCol[pos+1:]
-		ord = "desc"
+	allowedCols := []string{"id", "title"}
+	allowedDirs := []string{"asc", "desc", ""}
+	if !utils.InArray(sortCol, allowedCols) || !utils.InArray(sortDir, allowedDirs) {
+		return nil, errors.New("Invalid sorting")
 	}
 
 	query := fmt.Sprintf(`
 	select id, title, description
 	from item
 	order by %s %s
-	limit ?, ?`, col, ord)
+	limit ?, ?`, sortCol, sortDir)
 	rows, err := db.Query(query, offset, count)
 	if err != nil {
 		return nil, err

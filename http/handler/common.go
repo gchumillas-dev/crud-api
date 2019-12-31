@@ -48,9 +48,7 @@ func getParam(r *http.Request, key, def string) (param string) {
 	}
 
 	return
-
 }
-
 
 func inArray(item string, items []string) bool {
 	for index := range items {
