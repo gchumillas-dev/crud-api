@@ -84,6 +84,7 @@ func (item *Item) DeleteItem(db *sql.DB) error {
 }
 
 // GetItems gets all items.
+// TODO: rename count by rowsPerPage
 func GetItems(db *sql.DB, offset int, count int, sortCol string, sortDir string) ([]Item, error) {
 	items := []Item{}
 
@@ -126,4 +127,30 @@ func GetNumItems(db *sql.DB) (int, error) {
 	}
 
 	return count, nil
+}
+
+// SearchItem searches a give item and returns the page.
+func SearchItem(db *sql.DB, ID int64, rowsPerPage int, sortCol string, sortDir string) (int, error) {
+	query := fmt.Sprintf(`
+	select id
+	from item
+	order by %s %s`, sortCol, sortDir)
+	rows, err := db.Query(query)
+	if err != nil {
+		return 0, err
+	}
+
+	var pos int
+	for pos = 0; rows.Next(); pos++ {
+		var itemID int64
+		if err := rows.Scan(&itemID); err != nil {
+			return 0, err
+		}
+
+		if itemID == ID {
+			break
+		}
+	}
+
+	return pos / rowsPerPage, nil
 }

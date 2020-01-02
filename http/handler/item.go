@@ -97,14 +97,30 @@ func (env *Env) DeleteItem(w http.ResponseWriter, r *http.Request) {
 
 // GetItems handler.
 func (env *Env) GetItems(w http.ResponseWriter, r *http.Request) {
-	page, err := strconv.Atoi(getParam(r, "page", "0"))
-	if err != nil || page < 0 {
-		httpError(w, badRequestError)
-		return
-	}
+	var err error
+	searchID := getParam(r, "search_id", "")
 
 	var sortCol, sortDir string
 	utils.Unpack(strings.Split(getParam(r, "sort", "id,desc"), ","), &sortCol, &sortDir)
+
+	var page int
+	if len(searchID) > 0 {
+		ID, err := strconv.ParseInt(searchID, 10, 64)
+		if err != nil {
+			httpError(w, badRequestError)
+			return
+		}
+
+		if page, err = manager.SearchItem(env.DB, ID, env.RowsPerPage, sortCol, sortDir); err != nil {
+			httpError(w, badRequestError)
+			return
+		}
+	} else {
+		if page, err = strconv.Atoi(getParam(r, "page", "0")); err != nil {
+			httpError(w, badRequestError)
+			return
+		}
+	}
 
 	offset := page * env.RowsPerPage
 	items, err := manager.GetItems(env.DB, offset, env.RowsPerPage, sortCol, sortDir)
@@ -122,6 +138,7 @@ func (env *Env) GetItems(w http.ResponseWriter, r *http.Request) {
 		"sortDirection": sortDir,
 		"rowsPerPage":   env.RowsPerPage,
 		"numRows":       numRows,
+		"page":          page,
 		"items":         items,
 	})
 }
